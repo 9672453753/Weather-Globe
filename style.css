@@ -1,0 +1,335 @@
+/* ============================================
+   RESET & ROOT VARIABLES
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:            #0a0e1a;
+  --surface:       #141928;
+  --cyan:          #00d4ff;
+  --purple:        #7c3aed;
+  --cyan-glow:     rgba(0, 212, 255, 0.25);
+  --purple-glow:   rgba(124, 58, 237, 0.25);
+  --text:          #f0f4ff;
+  --text-muted:    rgba(240, 244, 255, 0.55);
+  --glass-bg:      rgba(10, 14, 30, 0.55);
+  --glass-border:  rgba(255, 255, 255, 0.09);
+  --blur:          blur(24px);
+  --radius:        18px;
+  --radius-pill:   999px;
+  --ease:          cubic-bezier(0.4, 0, 0.2, 1);
+  --transition:    all 0.3s var(--ease);
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ============================================
+   APP SHELL
+   ============================================ */
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+#cesiumContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================
+   GLASS UTILITY
+   ============================================ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-border);
+}
+
+.hidden { display: none !important; }
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  z-index: 100;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--glass-border);
+  white-space: nowrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-icon { font-size: 1.3rem; }
+.logo-text {
+  font-size: 1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.3px;
+}
+
+/* Search */
+.search-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.search-wrap:focus-within {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px var(--cyan-glow);
+}
+#searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  padding: 9px 14px;
+  width: 220px;
+}
+#searchInput::placeholder { color: var(--text-muted); }
+
+#searchBtn {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+#searchBtn:hover { filter: brightness(1.15); }
+#searchBtn:active { filter: brightness(0.9); }
+
+/* ============================================
+   WEATHER PANEL
+   ============================================ */
+.weather-panel {
+  position: absolute;
+  top: 84px;
+  right: 20px;
+  width: 300px;
+  border-radius: var(--radius);
+  padding: 22px;
+  z-index: 100;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--glass-border);
+  animation: slideIn 0.4s var(--ease) both;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* Panel Header */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.city-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.country-name {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.close-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.close-btn:hover {
+  background: rgba(255,80,80,0.25);
+  border-color: rgba(255,80,80,0.4);
+  color: #ff6b6b;
+}
+
+/* Hero temp */
+.weather-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.weather-emoji {
+  font-size: 3.2rem;
+  filter: drop-shadow(0 0 16px rgba(255, 200, 0, 0.4));
+  line-height: 1;
+}
+.temperature {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #fff 40%, var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.feels-like {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.weather-desc {
+  font-size: 0.88rem;
+  color: var(--cyan);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  margin-bottom: 16px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin-bottom: 16px;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 11px 12px;
+  transition: var(--transition);
+}
+.stat-card:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: rgba(0, 212, 255, 0.2);
+}
+.stat-icon  { font-size: 1.1rem; margin-bottom: 2px; }
+.stat-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
+.stat-value { font-size: 0.92rem; font-weight: 600; }
+
+/* ============================================
+   LOADING
+   ============================================ */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(10, 14, 26, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.spinner {
+  width: 38px;
+  height: 38px;
+  border: 3px solid rgba(0, 212, 255, 0.15);
+  border-top-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================
+   TOAST
+   ============================================ */
+.toast {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 75, 75, 0.88);
+  backdrop-filter: blur(12px);
+  color: white;
+  padding: 11px 22px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 500;
+  z-index: 300;
+  pointer-events: none;
+  animation: toastIn 0.3s var(--ease);
+}
+@keyframes toastIn {
+  from { transform: translateX(-50%) translateY(16px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
+}
+
+/* ============================================
+   HINT
+   ============================================ */
+.hint {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 9px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  z-index: 100;
+  pointer-events: none;
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
+}
+
+/* ============================================
+   CESIUM OVERRIDES — hide default chrome
+   ============================================ */
+.cesium-widget-credits,
+.cesium-credit-logoContainer,
+.cesium-credit-expand-link { display: none !important; }

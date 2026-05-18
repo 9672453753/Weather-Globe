@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Globe</title>
+  <meta name="description" content="Interactive 3D Weather Globe — real-time weather data on a zoomable globe." />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Widgets/widgets.css" />
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Cesium.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- 3D Globe Container -->
+    <div id="cesiumContainer"></div>
+
+    <!-- Top Header Bar -->
+    <header class="header glass" id="header">
+      <div class="logo">
+        <span class="logo-icon">🌍</span>
+        <span class="logo-text">Weather Globe</span>
+      </div>
+      <div class="search-wrap">
+        <input id="searchInput" type="text" placeholder="Search city or country…" autocomplete="off" />
+        <button id="searchBtn" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Weather Info Panel -->
+    <aside id="weatherPanel" class="weather-panel glass hidden" aria-live="polite">
+      <div class="panel-header">
+        <div>
+          <h1 id="cityName" class="city-name">—</h1>
+          <p id="countryName" class="country-name">—</p>
+        </div>
+        <button id="closePanel" class="close-btn" aria-label="Close">✕</button>
+      </div>
+
+      <div class="weather-hero">
+        <span id="weatherEmoji" class="weather-emoji">🌡️</span>
+        <div>
+          <div id="temperature" class="temperature">—°C</div>
+          <div id="feelsLike" class="feels-like">Feels like —°C</div>
+        </div>
+      </div>
+      <div id="weatherDesc" class="weather-desc">—</div>
+
+      <div class="divider"></div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">💧</span>
+          <span class="stat-label">Humidity</span>
+          <span id="humidity" class="stat-value">—%</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">💨</span>
+          <span class="stat-label">Wind</span>
+          <span id="windSpeed" class="stat-value">— m/s</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔵</span>
+          <span class="stat-label">Pressure</span>
+          <span id="pressure" class="stat-value">— hPa</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">👁️</span>
+          <span class="stat-label">Visibility</span>
+          <span id="visibility" class="stat-value">— km</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Loading Spinner -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+      <div class="spinner"></div>
+      <span>Fetching weather data…</span>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Hint -->
+    <div id="hint" class="hint glass">🖱️ Click anywhere on the globe to get weather</div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
